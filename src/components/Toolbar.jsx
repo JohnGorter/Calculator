@@ -1,7 +1,7 @@
-export default function Toolbar({ title = 'Rekenmachine', onClose }) {
+export default function Toolbar({ onClose }) {
   return (
     <header className="toolbar" data-testid="toolbar">
-      <span className="toolbar-title">{title}</span>
+      <span className="toolbar-title">Rekenmachine</span>
       <button
         type="button"
         className="toolbar-close"

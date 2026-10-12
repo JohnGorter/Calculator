@@ -24,11 +24,6 @@ describe('Toolbar component', () => {
     expect(screen.getByRole('button', { name: 'Sluiten' })).toBeTruthy();
   });
 
-  it('toont een opgegeven titel', () => {
-    render(<Toolbar title="Test" onClose={() => {}} />);
-    expect(screen.getByText('Test')).toBeTruthy();
-  });
-
   it('roept onClose aan bij klik op de sluitknop', () => {
     const onClose = vi.fn();
     render(<Toolbar onClose={onClose} />);
