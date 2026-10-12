@@ -53,7 +53,9 @@ export const inputDigit = (state, digit) => {
   if (state.waitingForOperand || state.justEvaluated) {
     return { ...state, display: digit, waitingForOperand: false, justEvaluated: false };
   }
+  // Voorloopnul (ook bij negatief getal, bijv. -0) wordt vervangen door het cijfer
   if (state.display === '0') return { ...state, display: digit };
+  if (state.display === '-0') return { ...state, display: '-' + digit };
   const digitCount = state.display.replace(/[-.]/g, '').length;
   if (digitCount >= MAX_DIGITS) return state;
   return { ...state, display: state.display + digit };
@@ -74,9 +76,16 @@ export const toggleSign = (state) => {
   return { ...state, display };
 };
 
+// Windows-gedrag: bij + en − is het percentage een deel van het opgeslagen getal
+// (200 + 2 % = 204). Bij × en ÷, of zonder bewerking, is het gewoon delen door 100.
 export const percent = (state) => {
   if (state.error) return state;
-  return resultState(state, formatNumber(Number(state.display) / 100));
+  const v = Number(state.display);
+  const additive = state.stored && (state.stored.op === '+' || state.stored.op === '-');
+  const result = additive
+    ? Number(state.stored.value) * v / 100
+    : v / 100;
+  return resultState(state, formatNumber(result));
 };
 
 export const sqrt = (state) => {

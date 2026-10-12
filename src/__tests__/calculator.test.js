@@ -154,3 +154,43 @@ describe('wissen', () => {
     expect(inputDigit(err, '4').error).toBeNull();
   });
 });
+
+describe('procent in combinatie met een bewerking (Windows-gedrag)', () => {
+  it('200 + 2 % = geeft 204 (percentage van het opgeslagen getal)', () => {
+    let s = setOperator(type(initialState(), '200'), '+');
+    s = percent(type(s, '2'));
+    expect(s.display).toBe('4');
+    expect(equals(s).display).toBe('204');
+  });
+  it('200 - 2 % = geeft 196', () => {
+    let s = setOperator(type(initialState(), '200'), '-');
+    s = percent(type(s, '2'));
+    expect(equals(s).display).toBe('196');
+  });
+  it('200 × 2 % = geeft 4 (percentage als operand)', () => {
+    let s = setOperator(type(initialState(), '200'), '×');
+    s = percent(type(s, '2'));
+    expect(equals(s).display).toBe('4');
+  });
+  it('procent zonder bewerking deelt door 100', () => {
+    expect(percent(type(initialState(), '200')).display).toBe('2');
+  });
+});
+
+describe('teken wisselen na decimaal teken en backspace', () => {
+  it('0. → ± → ⌫ → 5 geeft 5 en niet -05', () => {
+    let s = inputDecimal(initialState());
+    s = toggleSign(s);
+    s = backspace(s);
+    s = inputDigit(s, '5');
+    expect(s.display).toBe('-5');
+  });
+  it('geen voorloopnul na -0 bij cijferinvoer', () => {
+    let s = inputDecimal(initialState());
+    s = toggleSign(s);
+    s = backspace(s);
+    expect(s.display).toBe('-0');
+    s = inputDigit(s, '7');
+    expect(s.display).not.toMatch(/^-0\d/);
+  });
+});
