@@ -42,3 +42,28 @@ body {
 .btn-eq { background: #0067c0; }
 .btn-eq:hover { background: #1975c9; }
 .btn:focus-visible { outline: 2px solid #60cdff; outline-offset: 2px; }
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ff8c00;
+  color: #1f1f1f;
+  border-radius: 4px;
+  padding: 4px 4px 4px 12px;
+  margin-bottom: 8px;
+}
+.toolbar-title { font-size: 14px; font-weight: 600; }
+.toolbar-close {
+  width: 40px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #1f1f1f;
+  font-size: 16px;
+  cursor: pointer;
+}
+.toolbar-close:hover { background: #e67e00; }
+.toolbar-close:focus-visible { outline: 2px solid #1f1f1f; outline-offset: 2px; }

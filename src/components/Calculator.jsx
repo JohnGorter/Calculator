@@ -3,6 +3,7 @@ import {
   initialState, inputDigit, inputDecimal, toggleSign, percent, sqrt,
   reciprocal, square, setOperator, equals, clearEntry, clearAll, backspace,
 } from '../logic/calculator.js';
+import Toolbar from './Toolbar.jsx';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -80,8 +81,13 @@ export default function Calculator() {
 
   const display = state.error ?? state.display;
 
+  const handleClose = () => {
+    window.close();
+  };
+
   return (
     <div className="calculator" role="application" aria-label="Rekenmachine">
+      <Toolbar onClose={handleClose} />
       <div className="display" role="status" aria-live="polite" data-testid="display">
         {display}
       </div>
