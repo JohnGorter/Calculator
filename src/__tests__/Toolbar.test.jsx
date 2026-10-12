@@ -1,12 +1,17 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import Toolbar from '../components/Toolbar.jsx';
 import Calculator from '../components/Calculator.jsx';
 
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  delete window.closed;
 });
+
+function setWindowClosed(value) {
+  Object.defineProperty(window, 'closed', { configurable: true, get: () => value });
+}
 
 describe('Toolbar component', () => {
   it('toont de standaardtitel', () => {
@@ -17,6 +22,11 @@ describe('Toolbar component', () => {
   it('toont een sluitknop met toegankelijke naam', () => {
     render(<Toolbar onClose={() => {}} />);
     expect(screen.getByRole('button', { name: 'Sluiten' })).toBeTruthy();
+  });
+
+  it('toont een opgegeven titel', () => {
+    render(<Toolbar title="Test" onClose={() => {}} />);
+    expect(screen.getByText('Test')).toBeTruthy();
   });
 
   it('roept onClose aan bij klik op de sluitknop', () => {
@@ -38,5 +48,27 @@ describe('Calculator met toolbar', () => {
     render(<Calculator />);
     fireEvent.click(screen.getByRole('button', { name: 'Sluiten' }));
     expect(closeSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('toont geen melding als het venster gesloten is', () => {
+    vi.useFakeTimers();
+    vi.spyOn(window, 'close').mockImplementation(() => {});
+    setWindowClosed(true);
+    render(<Calculator />);
+    fireEvent.click(screen.getByRole('button', { name: 'Sluiten' }));
+    act(() => { vi.advanceTimersByTime(200); });
+    expect(screen.queryByRole('alert')).toBeNull();
+    vi.useRealTimers();
+  });
+
+  it('toont een melding als de browser het sluiten blokkeert', () => {
+    vi.useFakeTimers();
+    vi.spyOn(window, 'close').mockImplementation(() => {});
+    setWindowClosed(false);
+    render(<Calculator />);
+    fireEvent.click(screen.getByRole('button', { name: 'Sluiten' }));
+    act(() => { vi.advanceTimersByTime(200); });
+    expect(screen.getByRole('alert').textContent).toMatch(/Sluit het tabblad zelf/);
+    vi.useRealTimers();
   });
 });
