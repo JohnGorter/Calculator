@@ -175,6 +175,12 @@ describe('procent in combinatie met een bewerking (Windows-gedrag)', () => {
   it('procent zonder bewerking deelt door 100', () => {
     expect(percent(type(initialState(), '200')).display).toBe('2');
   });
+  it('200 + % zonder bevestigd getal gebruikt het huidige getal als operand (200 + 200 % = 600)', () => {
+    let s = setOperator(type(initialState(), '200'), '+');
+    s = percent(s);
+    expect(s.display).toBe('400');
+    expect(equals(s).display).toBe('600');
+  });
 });
 
 describe('teken wisselen na decimaal teken en backspace', () => {
