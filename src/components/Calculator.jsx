@@ -100,7 +100,7 @@ export default function Calculator() {
   useEffect(() => () => clearTimeout(closeTimer.current), []);
 
   return (
-    <div className="calculator" role="application" aria-label="Rekenmachine">
+    <div className="calculator" role="application" aria-label="Calculator">
       <Toolbar onClose={handleClose} />
       {closeBlocked && (
         <div className="close-notice" role="alert">
