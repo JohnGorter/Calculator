@@ -1,8 +1,11 @@
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useRef, useState } from 'react';
 import {
   initialState, inputDigit, inputDecimal, toggleSign, percent, sqrt,
   reciprocal, square, setOperator, equals, clearEntry, clearAll, backspace,
 } from '../logic/calculator.js';
+import Toolbar from './Toolbar.jsx';
+
+const CLOSE_CHECK_DELAY_MS = 150;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -80,8 +83,30 @@ export default function Calculator() {
 
   const display = state.error ?? state.display;
 
+  const [closeBlocked, setCloseBlocked] = useState(false);
+  const closeTimer = useRef(null);
+
+  // Browsers staan window.close() alleen toe voor vensters die via script zijn
+  // geopend. In een gewoon tabblad gebeurt er dan niets; daarom tonen we dan
+  // een melding zodat de gebruiker weet dat hij het tabblad zelf moet sluiten.
+  const handleClose = () => {
+    window.close();
+    clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => {
+      if (!window.closed) setCloseBlocked(true);
+    }, CLOSE_CHECK_DELAY_MS);
+  };
+
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+
   return (
     <div className="calculator" role="application" aria-label="Rekenmachine">
+      <Toolbar onClose={handleClose} />
+      {closeBlocked && (
+        <div className="close-notice" role="alert">
+          De browser staat sluiten via deze knop niet toe. Sluit het tabblad zelf.
+        </div>
+      )}
       <div className="display" role="status" aria-live="polite" data-testid="display">
         {display}
       </div>
