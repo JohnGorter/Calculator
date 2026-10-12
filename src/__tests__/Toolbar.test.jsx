@@ -16,7 +16,7 @@ function setWindowClosed(value) {
 describe('Toolbar component', () => {
   it('toont de standaardtitel', () => {
     render(<Toolbar onClose={() => {}} />);
-    expect(screen.getByText('Rekenmachine')).toBeTruthy();
+    expect(screen.getByText('Calculator')).toBeTruthy();
   });
 
   it('toont een sluitknop met toegankelijke naam', () => {

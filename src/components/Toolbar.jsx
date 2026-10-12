@@ -1,7 +1,7 @@
 export default function Toolbar({ onClose }) {
   return (
     <header className="toolbar" data-testid="toolbar">
-      <span className="toolbar-title">Rekenmachine</span>
+      <span className="toolbar-title">Calculator</span>
       <button
         type="button"
         className="toolbar-close"
